@@ -15,14 +15,14 @@
       <div class="start">
         <div class="date">
           <span class="tip">入住</span>
-          <span class="time">{{ startDate }}</span>
+          <span class="time">{{ startDateStr }}</span>
         </div>
         <div class="stay">共{{ stayCount }}晚</div>
       </div>
       <div class="end">
         <div class="date">
           <span class="tip">离店</span>
-          <span class="time">{{ endDate }}</span>
+          <span class="time">{{ endDateStr }}</span>
         </div>
       </div>
     </div>
@@ -54,15 +54,20 @@
         </div>
       </template>
     </div>
+
+    <div class="section search-btn">
+      <div class="btn" @click="searchBtnClick">开始搜索</div>
+    </div>
   </div>
 </template>
 
 <script setup>
 import router from "@/router";
 import { storeToRefs } from "pinia";
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import useCityStore from "@/stores/modules/city";
 import useHomeStore from "@/stores/modules/home";
+import useMainStore from "@/stores/modules/main";
 import { formartDate, diffDate } from "@/utils/formart_date";
 
 const cityClick = () => {
@@ -72,25 +77,33 @@ const cityClick = () => {
 const cityStore = useCityStore();
 const { currentCity } = storeToRefs(cityStore);
 
-const nowDate = new Date();
-const newDate = new Date();
-newDate.setDate(new Date().getDate() + 1);
+const mainStore = useMainStore();
+const { startDate, endDate } = storeToRefs(mainStore);
 
-const startDate = ref(formartDate(nowDate));
-const endDate = ref(formartDate(newDate));
-const stayCount = ref(diffDate(nowDate, newDate));
+const startDateStr = computed(() => formartDate(startDate.value));
+const endDateStr = computed(() => formartDate(endDate.value));
+const stayCount = ref(diffDate(startDate.value, endDate.value));
 
 const showCalendar = ref(false);
 const onConfirm = (value) => {
-  startDate.value = formartDate(value[0]);
-  endDate.value = formartDate(value[1]);
+  mainStore.startDate = value[0];
+  mainStore.endDate = value[1];
   stayCount.value = diffDate(value[0], value[1]);
   showCalendar.value = false;
 };
 
 const homeStore = useHomeStore();
-homeStore.fetchHotSuggestsData();
 const { hotSuggests } = storeToRefs(homeStore);
+
+const searchBtnClick = () => {
+  router.push({
+    path: "/search",
+    query: {
+      startDate: startDate.value,
+      endDate: endDate.value,
+    },
+  });
+};
 </script>
 
 <style lang="less" scoped>
@@ -157,47 +170,49 @@ const { hotSuggests } = storeToRefs(homeStore);
       }
     }
   }
-}
 
-.date-range {
-  height: 44px;
-  .stay {
-    flex: 1;
-    text-align: center;
-    font-size: 12px;
-    color: #666;
+  .date-range {
+    height: 44px;
+    .stay {
+      flex: 1;
+      text-align: center;
+      font-size: 12px;
+      color: #666;
+    }
   }
-}
 
-.price-counter {
-  .start {
-    border-right: 1px solid var(--line-color);
+  .price-counter {
+    .start {
+      border-right: 1px solid var(--line-color);
+    }
   }
-}
 
-.hot-suggests {
-  margin: 10px 0;
-  height: auto;
+  .hot-suggests {
+    margin: 10px 0;
+    height: auto;
 
-  .item {
-    padding: 4px 8px;
-    margin: 4px;
-    border-radius: 14px;
-    font-size: 12px;
-    line-height: 1;
+    .item {
+      padding: 4px 8px;
+      margin: 4px;
+      border-radius: 14px;
+      font-size: 12px;
+      line-height: 1;
+    }
   }
-}
 
-.hot-suggests {
-  margin: 10px 0;
-  height: auto;
-
-  .item {
-    padding: 4px 8px;
-    margin: 4px;
-    border-radius: 14px;
-    font-size: 12px;
-    line-height: 1;
+  .search-btn {
+    .btn {
+      width: 342px;
+      height: 38px;
+      max-height: 50px;
+      font-weight: 500;
+      font-size: 18px;
+      line-height: 38px;
+      text-align: center;
+      border-radius: 20px;
+      color: #fff;
+      background-image: var(--theme-linear-gradient);
+    }
   }
 }
 </style>

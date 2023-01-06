@@ -47,12 +47,6 @@ const { allGroups } = storeToRefs(cityStore);
 
 <style lang="less" scoped>
 .city {
-  position: relative;
-  z-index: 9;
-  background-color: #fff;
-  height: 100vh;
-  overflow-y: auto;
-
   .content {
     height: calc(100vh - 98px);
     overflow-y: auto;
