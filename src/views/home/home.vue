@@ -1,20 +1,23 @@
 <template>
-  <div class="home">
+  <div class="home" ref="homeRef">
     <homeNavBar />
     <div class="banner">
       <img src="@/assets/img/home/banner.webp" alt="" />
     </div>
     <homeSearchBox />
     <homeCategories />
-    <div class="search-bar" v-if="isShowSearchBar">
+    <div class="search-bar" v-show="isShowSearchBar">
       <search-bar />
     </div>
     <homeContent />
   </div>
 </template>
 
+<script>
+export default { name: "home" };
+</script>
 <script setup>
-import { computed, watch } from "vue";
+import { computed, ref, watch, onActivated } from "vue";
 import homeNavBar from "./cpns/home-nav-bar.vue";
 import homeSearchBox from "./cpns/home-search-box.vue";
 import homeCategories from "./cpns/home-categories.vue";
@@ -38,6 +41,13 @@ watch(isReachBottom, (newValue) => {
 
 const isShowSearchBar = computed(() => {
   return scrollTop.value > 360;
+});
+
+const homeRef = ref();
+onActivated(() => {
+  window.scrollTo({
+    top: scrollTop.value,
+  });
 });
 </script>
 
