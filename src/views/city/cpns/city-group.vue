@@ -1,24 +1,29 @@
 <template>
   <div class="city-group">
-    <van-index-bar
-      :sticky="false"
-      :index-list="indexList"
-      highlight-color="#ff9854"
-    >
-      <van-index-anchor index="1">热门</van-index-anchor>
-      <div class="list">
-        <template v-for="(item, index) in currentGroup.hotCities" :key="index">
-          <div class="city" @click="cityClick(item)">{{ item.cityName }}</div>
-        </template>
-      </div>
+    <div>
+      <van-index-bar
+        :sticky="false"
+        :index-list="indexList"
+        highlight-color="#ff9854"
+      >
+        <van-index-anchor :index="'#'">热门</van-index-anchor>
+        <div class="list">
+          <template
+            v-for="(item, index) in currentGroup.hotCities"
+            :key="index"
+          >
+            <div class="city" @click="cityClick(item)">{{ item.cityName }}</div>
+          </template>
+        </div>
 
-      <template v-for="(item, index) in currentGroup.cities" :key="index">
-        <van-index-anchor :index="item.group" />
-        <template v-for="(iten, index) in item.cities" :key="index">
-          <van-cell :title="iten.cityName" @click="cityClick(iten)" />
+        <template v-for="(item, index) in currentGroup.cities" :key="index">
+          <van-index-anchor :index="item.group" />
+          <template v-for="(iten, index) in item.cities" :key="index">
+            <van-cell :title="iten.cityName" @click="cityClick(iten)" />
+          </template>
         </template>
-      </template>
-    </van-index-bar>
+      </van-index-bar>
+    </div>
   </div>
 </template>
 
@@ -49,6 +54,8 @@ const cityClick = (value) => {
 
 <style lang="less" scoped>
 .city-group {
+  height: calc(100vh - 98px);
+  overflow-y: auto;
   .list {
     display: flex;
     flex-wrap: wrap;
