@@ -1,2 +1,2 @@
 # cys-trip
-vue3
+基于vue3的项目
