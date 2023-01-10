@@ -31,6 +31,8 @@
 </template>
 
 <script setup>
+import { computed, watch } from "vue";
+
 const props = defineProps({
   swipeData: {
     type: Array,
@@ -38,7 +40,7 @@ const props = defineProps({
   },
 });
 
-const swipeGroup = {};
+let swipeGroup = {};
 for (const item of props.swipeData) {
   let valueArray = swipeGroup[item.enumPictureCategory];
   if (!valueArray) {
@@ -48,16 +50,31 @@ for (const item of props.swipeData) {
   valueArray.push(item);
 }
 
+watch(
+  () => props.swipeData,
+  (newValue) => {
+    swipeGroup = {};
+    for (const item of newValue) {
+      let valueArray = swipeGroup[item.enumPictureCategory];
+      if (!valueArray) {
+        valueArray = [];
+        swipeGroup[item.enumPictureCategory] = valueArray;
+      }
+      valueArray.push(item);
+    }
+  }
+);
+
 const nameReg = /【(.*?)】/i;
 const getName = (name) => {
   const result = nameReg.exec(name);
   return result[1];
 };
 
-const getCategoryIndex = (item) => {
+const getCategoryIndex = computed(() => (item) => {
   const valueArray = swipeGroup[item.enumPictureCategory];
   return valueArray.findIndex((data) => data === item) + 1;
-};
+});
 </script>
 
 <style lang="less" scoped>

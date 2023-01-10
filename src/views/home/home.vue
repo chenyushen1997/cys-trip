@@ -30,7 +30,8 @@ homeStore.fetchHotSuggestsData();
 homeStore.fetchCategoriesData();
 homeStore.fetchHouseListData();
 
-const { isReachBottom, scrollTop } = useScroll();
+const homeRef = ref();
+const { isReachBottom, scrollTop } = useScroll(homeRef);
 watch(isReachBottom, (newValue) => {
   if (newValue) {
     homeStore.fetchHouseListData().then(() => {
@@ -43,7 +44,6 @@ const isShowSearchBar = computed(() => {
   return scrollTop.value > 360;
 });
 
-const homeRef = ref();
 onActivated(() => {
   window.scrollTo({
     top: scrollTop.value,
@@ -53,6 +53,9 @@ onActivated(() => {
 
 <style lang="less" scoped>
 .home {
+  height: 100vh;
+  overflow-y: auto;
+  box-sizing: border-box;
   padding-bottom: 60px;
   .banner {
     img {
