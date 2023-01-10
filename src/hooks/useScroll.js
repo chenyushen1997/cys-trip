@@ -10,14 +10,15 @@ export default function useScroll(elRef) {
   const scrollListenerHandler = throttle(() => {
     if (el === window) {
       scrollTop.value = document.documentElement.scrollTop;
-      scrollHeight.value = document.documentElement.scrollHeight;
       clientHeigth.value = document.documentElement.clientHeight;
+      scrollHeight.value = document.documentElement.scrollHeight;
     } else {
-      scrollTop.value = el.screenTop;
+      scrollTop.value = el.scrollTop;
+      clientHeigth.value = el.clientHeight;
       scrollHeight.value = el.scrollHeight;
-      clientHeigth.value = el.offsetHeight;
     }
     if (scrollTop.value + clientHeigth.value >= scrollHeight.value) {
+      console.log("滚到了底部");
       isReachBottom.value = true;
     }
   }, 100);
